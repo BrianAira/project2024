@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/main.dart';
-import 'articulos.dart';
+import '../widgets/articuloCard.dart';
+import '../DB/articulos.dart';
 
 class PhonePage extends StatefulWidget {
   @override

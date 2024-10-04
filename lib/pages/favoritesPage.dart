@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'main.dart';
+import '../main.dart';
 
 //import 'package:Proyecto fin de año/myapp/generatorPage.dart'; // Ruta absoluta desde el paquete
 class FavoritesPage extends StatelessWidget {
