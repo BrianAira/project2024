@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../DB/articulos.dart';
 import '../main.dart';
 import 'package:provider/provider.dart';
@@ -10,13 +11,16 @@ class ArticuloCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 5,
+      elevation: 8,
+      shadowColor: Colors.grey.withOpacity(0.5),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [
-          Expanded(
+          Container(
+            //borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+            constraints: BoxConstraints(maxHeight: 350),
             child: Image.network(
               articulo.imageUrl,
               fit: BoxFit.cover,
