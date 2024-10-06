@@ -35,21 +35,24 @@ class _PhonePageState extends State<PhonePage> {
         ),
       ),
       body: LayoutBuilder(builder: (context, constraints) {
-        final double itemWith = 200;
-        final double minWidthForSingleColumn = 200;
+        final double itemWith = 250;
+
         int crossAxisCount;
 
-        if (constraints.maxWidth < minWidthForSingleColumn) {
-          crossAxisCount = 1;
+        if (constraints.maxWidth >= itemWith * 3) {
+          crossAxisCount = 3;
+        } else if (constraints.maxWidth >= 500) {
+          crossAxisCount = 2;
         } else {
-          crossAxisCount = (constraints.maxWidth / itemWith).floor();
+          crossAxisCount = 1;
         }
         return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                childAspectRatio: 3 / 4),
+                childAspectRatio: 2 / 4), //relacion de alto y ancho
+            itemCount: _phoneList.length,
             itemBuilder: (context, index) {
               return ArticuloCard(
                   articulo: _phoneList[
