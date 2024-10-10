@@ -17,8 +17,8 @@ class _ArticuloCardState extends State<ArticuloCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 500,
-        height: 900,
+        width: 200,
+        height: 500,
         child: Card(
           elevation: 8,
           shadowColor: Colors.grey.withOpacity(0.5),
@@ -39,13 +39,21 @@ class _ArticuloCardState extends State<ArticuloCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.articulo.nombre,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: Text(
+                        widget.articulo.nombre,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Text(
-                        'Precio \$${widget.articulo.precio.toStringAsFixed(2)}'),
+                      'Precio \$${widget.articulo.precio.toStringAsFixed(2)}',
+                      style: TextStyle(
+                          fontFamily: AutofillHints.countryName,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
                     Text('Cantidad: ${widget.articulo.cantidad}'),
                     Text(widget.articulo.descripcion),
                   ],
