@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     selectedIndex = value;
                   });
                 },
-                minExtendedWidth: 150,
+                minExtendedWidth: 200,
               ),
             ),
             Expanded(
