@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import '../widgets/articuloCard.dart';
+import '../widgets/articulo_card.dart';
 import '../DB/articulos.dart';
 
 class PhonePage extends StatefulWidget {
+  const PhonePage({super.key});
   @override
-  _PhonePageState createState() => _PhonePageState();
+  PhonePageState createState() => PhonePageState();
 }
 
-class _PhonePageState extends State<PhonePage> {
+class PhonePageState extends State<PhonePage> {
   List<Articulo> _phoneList = [];
   @override
   void initState() {
@@ -26,16 +27,16 @@ class _PhonePageState extends State<PhonePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Phones'),
-        bottom: PreferredSize(
+        title: const Text('Phones'),
+        bottom: const PreferredSize(
           preferredSize: Size.fromHeight(50.0),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
           ),
         ),
       ),
       body: LayoutBuilder(builder: (context, constraints) {
-        final double itemWith = 250;
+        const double itemWith = 250;
 
         int crossAxisCount;
 

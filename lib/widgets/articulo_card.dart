@@ -7,16 +7,16 @@ import 'package:provider/provider.dart';
 class ArticuloCard extends StatefulWidget {
   final Articulo articulo;
 
-  ArticuloCard({required this.articulo});
+  const ArticuloCard({super.key, required this.articulo});
   @override
-  _ArticuloCardState createState() => _ArticuloCardState();
+  ArticuloCardState createState() => ArticuloCardState();
 }
 
-class _ArticuloCardState extends State<ArticuloCard> {
+class ArticuloCardState extends State<ArticuloCard> {
   bool _isHover = false;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: 200,
         height: 500,
         child: Card(
@@ -28,7 +28,8 @@ class _ArticuloCardState extends State<ArticuloCard> {
           child: Column(
             children: [
               Container(
-                constraints: BoxConstraints(maxHeight: 650, minHeight: 250),
+                constraints:
+                    const BoxConstraints(maxHeight: 650, minHeight: 250),
                 child: Image.network(
                   widget.articulo.imageUrl,
                   fit: BoxFit.cover,
@@ -43,13 +44,13 @@ class _ArticuloCardState extends State<ArticuloCard> {
                       padding: const EdgeInsets.all(2),
                       child: Text(
                         widget.articulo.nombre,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Text(
                       'Precio \$${widget.articulo.precio.toStringAsFixed(2)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: AutofillHints.countryName,
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
@@ -59,9 +60,9 @@ class _ArticuloCardState extends State<ArticuloCard> {
                   ],
                 ),
               ),
-              Spacer(),
-              ButtonBar(
-                alignment: MainAxisAlignment.spaceBetween,
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Consumer<MyAppState>(builder: (context, myAppState, child) {
                     final isFavorite =
@@ -91,12 +92,13 @@ class _ArticuloCardState extends State<ArticuloCard> {
                   _isHover = false;
                 }),
                 child: AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                  duration: const Duration(milliseconds: 200),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
                   decoration: BoxDecoration(
                     color: _isHover
-                        ? Color.fromARGB(255, 255, 190, 27)
-                        : Color.fromARGB(255, 16, 68, 100),
+                        ? const Color.fromARGB(255, 255, 190, 27)
+                        : const Color.fromARGB(255, 16, 68, 100),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: ElevatedButton(

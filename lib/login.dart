@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+//import 'package:flutter/rendering.dart';
 import './main.dart';
 //import 'package:flutter/widgets.dart';
 //import 'package:myapp/main.dart';
@@ -7,11 +7,12 @@ import './main.dart';
 import './DB/usuarios.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   final _usuarioController = TextEditingController();
   //final _emailController = TextEditingController();
   final _contrasenaController = TextEditingController();
@@ -23,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (nombreUsuario.isEmpty || contrasenaUsuario.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Por favor completa los campos')));
+          const SnackBar(content: Text('Por favor completa los campos')));
       return;
     }
 
@@ -36,14 +37,14 @@ class _LoginPageState extends State<LoginPage> {
 
     if (usuario == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Usuario o contraseña incorrectos')),
+        const SnackBar(content: Text('Usuario o contraseña incorrectos')),
       );
       // Detener ejecución si no se encuentra el usuario
     } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MyHomePage(
+          builder: (context) => const MyHomePage(
             title: 'Flutter Demo Home Page',
           ),
         ),
@@ -55,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
       ),
       body: Container(
         //implementeacion de la imagen de fondo
@@ -113,14 +114,14 @@ class _LoginPageState extends State<LoginPage> {
               LayoutBuilder(builder: (context, constraints) {
                 double width = constraints.maxWidth * 0.8;
                 return Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                         vertical: 8), // Añadimos un poco de padding horizontal
                     child: Center(
                         child: SizedBox(
                       width: width > 400 ? 400 : width,
                       child: TextField(
                         controller: _contrasenaController,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                             hintText: "Password",
                             hintStyle: TextStyle(color: Colors.white),
@@ -135,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20), // Espacio entre el campo y el botón
               ElevatedButton(
                 onPressed: _login,
-                child: Text("Ingresar"),
+                child: const Text("Ingresar"),
               ),
               nuevaCuenta(), // Aquí se agrega el botón debajo del campo de usuario
             ],

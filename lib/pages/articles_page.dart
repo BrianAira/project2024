@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import '../DB/articulos.dart';
-import '../widgets/articuloCard.dart';
+import '../widgets/articulo_card.dart';
 
 class ArticlePage extends StatefulWidget {
+  const ArticlePage({super.key});
   @override
-  _ArticlePageState createState() => _ArticlePageState();
+  ArticlePageState createState() => ArticlePageState();
 }
 
-class _ArticlePageState extends State<ArticlePage> {
+class ArticlePageState extends State<ArticlePage> {
   //barra de busqueda --->
-  TextEditingController _searchController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
   List<Articulo> _filteredArticles = [];
 
   @override
   void initState() {
     super.initState();
     _filteredArticles = articulos;
-    _searchController.addListener(_onSearchChanged);
+    searchController.addListener(_onSearchChanged);
   }
 
   void _onSearchChanged() {
@@ -24,17 +25,17 @@ class _ArticlePageState extends State<ArticlePage> {
       _filteredArticles = articulos.where((articulo) {
         return articulo.nombre
                 .toLowerCase()
-                .contains(_searchController.text.toLowerCase()) ||
+                .contains(searchController.text.toLowerCase()) ||
             articulo.tipo
                 .toLowerCase()
-                .contains(_searchController.text.toLowerCase());
+                .contains(searchController.text.toLowerCase());
       }).toList();
     });
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -43,28 +44,29 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Articulos"),
+          title: const Text("Articulos"),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(50.0),
+            preferredSize: const Size.fromHeight(50.0),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                controller: _searchController,
+                controller: searchController,
                 decoration: InputDecoration(
-                    hintText: 'Buscar Producto...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10))),
+                  hintText: 'Buscar Producto...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
               ),
             ),
           ),
         ),
         body: LayoutBuilder(
           builder: (context, constraints) {
-            final double itemWith = 200;
+            const double itemWidth = 250;
 
             int crossAxisCount;
-            if (constraints.maxWidth >= itemWith * 3) {
+            if (constraints.maxWidth >= itemWidth * 3) {
               crossAxisCount = 3;
             } else if (constraints.maxWidth >= 500) {
               crossAxisCount = 2;
@@ -76,7 +78,7 @@ class _ArticlePageState extends State<ArticlePage> {
                   crossAxisCount: crossAxisCount,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
-                  childAspectRatio: 3 / 5),
+                  childAspectRatio: 2 / 4),
               itemCount: _filteredArticles.length,
               itemBuilder: (context, index) {
                 return ArticuloCard(articulo: _filteredArticles[index]);

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 //import 'package:url_launcher/url_launcher.dart'; //importa dependencia de
 import 'package:provider/provider.dart';
-import './pages/phonePage.dart'; // Ruta relativa
-import './pages/favoritesPage.dart';
-import './pages/articlesPage.dart';
+import 'pages/phone_page.dart'; // Ruta relativa
+import 'pages/favorites_page.dart';
+import 'pages/articles_page.dart';
 import 'DB/articulos.dart';
 import './widgets/navigator_rail.dart';
-import './widgets/appBarWidget.dart';
+import 'widgets/app_bar_widget.dart';
+import 'pages/store_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -32,9 +33,10 @@ class MyApp extends StatelessWidget {
 }
 
 class GeneratorPage extends StatelessWidget {
+  const GeneratorPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
       ),
@@ -43,7 +45,9 @@ class GeneratorPage extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  List<Articulo> _favoritos = [];
+  final List<Articulo> _articulos = [];
+  List<Articulo> get articulos => _articulos;
+  final List<Articulo> _favoritos = [];
   List<Articulo> get favoritos => _favoritos;
 
   void toggleFavorite(Articulo articulo) {
@@ -52,6 +56,11 @@ class MyAppState extends ChangeNotifier {
     } else {
       _favoritos.add(articulo);
     }
+    notifyListeners();
+  }
+
+  void agregarArticulo(Articulo articulo) {
+    articulos.add(articulo);
     notifyListeners();
   }
 }
@@ -72,24 +81,26 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = GeneratorPage();
+        page = const GeneratorPage();
       case 1:
-        page = FavoritesPage();
+        page = const FavoritesPage();
       case 2:
-        page = ArticlePage();
+        page = const ArticlePage();
         break;
       case 3:
-        page = PhonePage();
+        page = const PhonePage();
+      case 4:
+        page = const StorePage();
       default:
         throw UnimplementedError("Widget no disponible para: $selectedIndex");
     }
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
-        appBar: appBarWidget(title: 'Bussines'),
+        appBar: const AppBarWidget(title: 'Bussines'),
         body: Row(
           children: [
             SafeArea(
-              child: customNavigationRail(
+              child: CustomNavigationRail(
                 selectedIndex: selectedIndex,
                 onDestinationSelected: (value) {
                   setState(() {

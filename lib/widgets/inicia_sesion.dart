@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const inicioSesion());
+  runApp(const InicioSesion());
 }
 
-class inicioSesion extends StatelessWidget {
-  const inicioSesion({super.key});
+class InicioSesion extends StatelessWidget {
+  const InicioSesion({super.key});
 
   @override
   Widget build(BuildContext context) {
