@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter/rendering.dart';
-//import '../main.dart';
 
 class CustomNavigationRail extends StatelessWidget {
   final int selectedIndex;
@@ -28,12 +26,13 @@ class CustomNavigationRail extends StatelessWidget {
           icon: Icon(Icons.favorite),
           label: Text("Favorites"),
         ),
-        NavigationRailDestination(
-            icon: Icon(Icons.add_shopping_cart), label: Text("Articles")),
+        //NavigationRailDestination(
+        //  icon: Icon(Icons.add_shopping_cart), label: Text("Articles")),
         NavigationRailDestination(
             icon: Icon(Icons.phone_android_rounded), label: Text("Phones")),
         NavigationRailDestination(
             icon: Icon(Icons.store), label: Text('Store')),
+        NavigationRailDestination(icon: Icon(Icons.api), label: Text('api'))
       ],
       selectedIndex: selectedIndex,
       onDestinationSelected:

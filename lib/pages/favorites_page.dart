@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import '../main.dart';
+import '../providers/my_app_state.dart';
+//import '../models/producto_model.dart';
 
-//import 'package:Proyecto fin de año/myapp/generatorPage.dart'; // Ruta absoluta desde el paquete
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
   @override
@@ -24,7 +24,7 @@ class FavoritesPage extends StatelessWidget {
             itemBuilder: (context, index) {
               final articulo = myAppState.favoritos[index];
               return ListTile(
-                leading: Image.network(articulo.imageUrl),
+                leading: Image.network(articulo.url),
                 title: Text(articulo.nombre),
                 subtitle:
                     Text('Precio: \$${articulo.precio.toStringAsFixed(2)}'),

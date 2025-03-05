@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter/rendering.dart';
-import '../DB/articulos.dart';
-import '../main.dart';
+//import '../providers/article_provider.dart';
+import '../models/producto_model.dart';
+import '../providers/my_app_state.dart';
 import 'package:provider/provider.dart';
 
 class ArticuloCard extends StatefulWidget {
-  final Articulo articulo;
+  final Producto producto;
 
-  const ArticuloCard({super.key, required this.articulo});
+  const ArticuloCard({super.key, required this.producto});
   @override
   ArticuloCardState createState() => ArticuloCardState();
 }
@@ -31,7 +31,7 @@ class ArticuloCardState extends State<ArticuloCard> {
                 constraints:
                     const BoxConstraints(maxHeight: 650, minHeight: 250),
                 child: Image.network(
-                  widget.articulo.imageUrl,
+                  widget.producto.url,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -43,20 +43,20 @@ class ArticuloCardState extends State<ArticuloCard> {
                     Padding(
                       padding: const EdgeInsets.all(2),
                       child: Text(
-                        widget.articulo.nombre,
+                        widget.producto.nombre,
                         style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Text(
-                      'Precio \$${widget.articulo.precio.toStringAsFixed(2)}',
+                      'Precio \$${widget.producto.precio.toStringAsFixed(2)}',
                       style: const TextStyle(
                           fontFamily: AutofillHints.countryName,
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
-                    Text('Cantidad: ${widget.articulo.cantidad}'),
-                    Text(widget.articulo.descripcion),
+                    Text('Cantidad: ${widget.producto.stock}'),
+                    Text(widget.producto.descripcion),
                   ],
                 ),
               ),
@@ -66,10 +66,10 @@ class ArticuloCardState extends State<ArticuloCard> {
                 children: [
                   Consumer<MyAppState>(builder: (context, myAppState, child) {
                     final isFavorite =
-                        myAppState.favoritos.contains(widget.articulo);
+                        myAppState.favoritos.contains(widget.producto);
                     return ElevatedButton(
                         onPressed: () {
-                          myAppState.toggleFavorite(widget.articulo);
+                          myAppState.toggleFavorite(widget.producto);
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent, elevation: 0),

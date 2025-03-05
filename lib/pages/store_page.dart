@@ -1,10 +1,13 @@
 import 'dart:io';
-
+import 'package:flutter_application_1/services/producto_service.dart';
 import 'package:image_picker/image_picker.dart';
-// import '../DB/articulos.dart';
-// import '../main.dart';
-// import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import '../models/producto_model.dart';
+//import '../services/api_services.dart';
+import '../widgets/build_text_field_store.dart';
+import '../widgets/product_managment_store.dart';
+import '../services/store_service.dart';
+import '../services/base_api_service.dart';
 
 class StorePage extends StatefulWidget {
   const StorePage({super.key});
@@ -15,14 +18,17 @@ class StorePage extends StatefulWidget {
 class StorePageState extends State<StorePage> {
   final TextEditingController nombreController = TextEditingController();
   final TextEditingController tipoController = TextEditingController();
-  final TextEditingController cantidadController = TextEditingController();
+  final TextEditingController stockController = TextEditingController();
   final TextEditingController precioController = TextEditingController();
   final TextEditingController descripcionController = TextEditingController();
   final TextEditingController talleController = TextEditingController();
   final TextEditingController colorController = TextEditingController();
-
+  final TextEditingController urlController = TextEditingController();
   String estadoSeleccionado = "Nuevo";
   File? _imagenSeleccionada;
+
+  final BaseApiService apiService = BaseApiService();
+  //final apiService = ApiService();
 
   Future<void> _seleccionarImagen() async {
     final ImagePicker picker = ImagePicker();
@@ -34,46 +40,65 @@ class StorePageState extends State<StorePage> {
     }
   }
 
-  void _subirProducto() {
-    if (nombreController.text.isEmpty || precioController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Por favor, completa todos los campos obligatorios")),
-      );
+  Future<void> _enviarProducto() async {
+    if (nombreController.text.isEmpty ||
+        descripcionController.text.isEmpty ||
+        urlController.text.isEmpty ||
+        //precioController.text.isEmpty ||
+        stockController.text.isEmpty) {
+      _mostrarMensaje(context, "Todos los campos son obligatorios", false);
       return;
     }
-    // Aquí iría la lógica para enviar los datos a la base de datos
+    final nuevoProducto = Producto(
+      nombre: nombreController.text,
+      descripcion: descripcionController.text,
+      //precio: double.tryParse(precioController.text) ?? 0.0,
+      stock: int.tryParse(stockController.text) ?? 0,
+      url: urlController.text,
+    );
+
+    try {
+      await addProducto(nuevoProducto); //apiService.addProducto(nuevoProducto);
+      _mostrarMensaje(context, "Producto agregado con éxito", true);
+    } catch (e) {
+      _mostrarMensaje(context, "Error al agregar producto: $e ", false);
+    }
+  }
+
+  void _mostrarMensaje(BuildContext context, String mensaje, bool esExito) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Producto subido correctamente")),
+      SnackBar(
+        content: Text(mensaje, style: TextStyle(color: Colors.white)),
+        backgroundColor: esExito ? Colors.green : Colors.red,
+        duration: Duration(seconds: 3),
+      ),
     );
   }
 
-  ////---------INICIA GESTION PARA EDITAR Y ELIMINAR PRODUCTOS
-  ///implementacion de campo de texto y objeto temporal para reemplazar la base de datos
-  final TextEditingController _searchController = TextEditingController();
-  final List<Map<String, dynamic>> _products = [
-    {'name': 'Pantalón', 'type': 'Ropa', 'price': 1000},
-    {'name': 'Remera', 'type': 'Ropa', 'price': 500},
-    {'name': 'Zapatillas', 'type': 'Calzado', 'price': 2000},
-  ];
+  final TextEditingController searchController = TextEditingController();
+  // final List<Map<String, dynamic>> _products = [
+  //   {'name': 'Pantalón', 'type': 'Ropa', 'price': 1000},
+  //   {'name': 'Remera', 'type': 'Ropa', 'price': 500},
+  //   {'name': 'Zapatillas', 'type': 'Calzado', 'price': 2000},
+  // ];
   List<Map<String, dynamic>> _filteredProducts = [];
 
   //Inicia estado para la barra de busqueda
   @override
-  void initState() {
-    super.initState();
-    _filteredProducts = List.from(_products);
+  // void initState() {
+  //   super.initState();
+  //   _filteredProducts = List.from(_products);
+  // }
+
+  void searchProducts(String query) {
+    // setState(() {
+    //   _filteredProducts = _products.where((product) {
+    //     return product['name'].toLowerCase().contains(query.toLowerCase());
+    //   }).toList();
+    // });
   }
 
-  void _searchProducts(String query) {
-    setState(() {
-      _filteredProducts = _products.where((product) {
-        return product['name'].toLowerCase().contains(query.toLowerCase());
-      }).toList();
-    });
-  }
-
-  void _editAllProducts() {
+  void editAllProducts() {
     setState(() {
       for (var product in _filteredProducts) {
         product['price'] = (product['price'] * 0.9).toInt();
@@ -81,17 +106,17 @@ class StorePageState extends State<StorePage> {
     });
   }
 
-  void _editProduct(int index) {
+  void editProduct(int index) {
     setState(() {
       _filteredProducts[index]['price'] += 100;
     });
   }
 
-  void _deleteProduct(int index) {
-    setState(() {
-      _products.removeWhere((product) => _filteredProducts[index] == product);
-      _filteredProducts.removeAt(index);
-    });
+  void deleteProduct(int index) {
+    // setState(() {
+    //   _products.removeWhere((product) => _filteredProducts[index] == product);
+    //   _filteredProducts.removeAt(index);
+    // });
   }
 
   @override
@@ -123,12 +148,11 @@ class StorePageState extends State<StorePage> {
               const Text("Subir producto",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
-              _buildTextField(nombreController, "Nombre del producto"),
-              _buildTextField(tipoController, "Tipo de producto"),
-              _buildTextField(cantidadController, "Cantidad", isNumeric: true),
-              _buildTextField(precioController, "Precio", isNumeric: true),
-              _buildTextField(descripcionController, "Descripción",
-                  maxLines: 3),
+              buildTextField(nombreController, "Nombre del producto"),
+              buildTextField(tipoController, "Tipo de producto"),
+              buildTextField(stockController, "Cantidad", isNumeric: true),
+              buildTextField(precioController, "Precio", isNumeric: true),
+              buildTextField(descripcionController, "Descripción", maxLines: 3),
               const SizedBox(height: 10),
               DropdownButtonFormField(
                 value: estadoSeleccionado,
@@ -142,8 +166,8 @@ class StorePageState extends State<StorePage> {
                   });
                 },
               ),
-              _buildTextField(talleController, "Talle (Opcional)"),
-              _buildTextField(colorController, "Color (Opcional)"),
+              buildTextField(talleController, "Talle (Opcional)"),
+              buildTextField(urlController, "ImagenURL (obligatorio)"),
               const SizedBox(height: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -152,7 +176,6 @@ class StorePageState extends State<StorePage> {
                     onPressed: _seleccionarImagen,
                     icon: const Icon(Icons.image),
                     label: const Text('seleccionar imagen'),
-                    //child: const Text("Seleccionar imagen"),
                   ),
                   const SizedBox(width: 10),
                   _imagenSeleccionada != null
@@ -162,7 +185,7 @@ class StorePageState extends State<StorePage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _subirProducto,
+                onPressed: _enviarProducto,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent,
                   shape: RoundedRectangleBorder(
@@ -171,6 +194,15 @@ class StorePageState extends State<StorePage> {
                 child: const Text('Subir producto',
                     style: TextStyle(color: Colors.white)),
               ),
+              const SizedBox(height: 20),
+              productManager(
+                searchController: searchController,
+                searchProducts: searchProducts,
+                filteredProducts: _filteredProducts,
+                editAllProducts: editAllProducts,
+                editProduct: editProduct,
+                deleteProduct: deleteProduct,
+              ),
             ],
           ),
         ),
@@ -178,76 +210,77 @@ class StorePageState extends State<StorePage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label,
-      {bool isNumeric = false, int maxLines = 1}) {
-    return Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: label,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
-          maxLines: maxLines,
-        ));
-  }
+  // Widget _buildTextField(TextEditingController controller, String label,
+  //     {bool isNumeric = false, int maxLines = 1}) {
+  //   return Padding(
+  //       padding: const EdgeInsets.only(bottom: 10),
+  //       child: TextField(
+  //         controller: controller,
+  //         decoration: InputDecoration(
+  //           labelText: label,
+  //           border: OutlineInputBorder(
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //         ),
+  //         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+  //         maxLines: maxLines,
+  //       ));
+  // }
 
-  Widget _ProductManager(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
-            controller: _searchController,
-            decoration: const InputDecoration(
-              labelText: 'Buscar por nombre o tipo',
-              border: OutlineInputBorder(),
-            ),
-            onChanged: _searchProducts,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          ElevatedButton(
-            onPressed: _editAllProducts,
-            child: const Text('Editar todos'),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Expanded(
-              child: ListView.builder(
-            itemCount: _filteredProducts.length,
-            itemBuilder: (context, index) {
-              return Card(
-                margin: EdgeInsets.symmetric(vertical: 8),
-                child: ListTile(
-                  title: Text(_filteredProducts[index]['name']),
-                  subtitle: Text(
-                      "Tipo ${_filteredProducts[index]['type']}\nPrecio: \$${_filteredProducts[index]['price']}"),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.orange),
-                        onPressed: () => _editProduct(index),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _deleteProduct(index),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            },
-          ))
-        ],
-      ),
-    );
-  }
+  // Widget productManager() {
+  //   return Padding(
+  //     padding: const EdgeInsets.all(16.0),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         TextField(
+  //           controller: _searchController,
+  //           decoration: const InputDecoration(
+  //             labelText: 'Buscar por nombre o tipo',
+  //             border: OutlineInputBorder(),
+  //           ),
+  //           onChanged: _searchProducts,
+  //         ),
+  //         const SizedBox(
+  //           height: 10,
+  //         ),
+  //         ElevatedButton(
+  //           onPressed: _editAllProducts,
+  //           child: const Text('Editar todos'),
+  //         ),
+  //         const SizedBox(
+  //           height: 10,
+  //         ),
+  //         SizedBox(
+  //             height: 300,
+  //             child: ListView.builder(
+  //               itemCount: _filteredProducts.length,
+  //               itemBuilder: (context, index) {
+  //                 return Card(
+  //                   margin: EdgeInsets.symmetric(vertical: 8),
+  //                   child: ListTile(
+  //                     title: Text(_filteredProducts[index]['name']),
+  //                     subtitle: Text(
+  //                         "Tipo ${_filteredProducts[index]['type']}\nPrecio: \$${_filteredProducts[index]['price']}"),
+  //                     trailing: Row(
+  //                       mainAxisSize: MainAxisSize.min,
+  //                       children: [
+  //                         IconButton(
+  //                           icon: const Icon(Icons.edit, color: Colors.orange),
+  //                           onPressed: () => _editProduct(index),
+  //                         ),
+  //                         IconButton(
+  //                           icon: const Icon(Icons.delete, color: Colors.red),
+  //                           onPressed: () => _deleteProduct(index),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 );
+  //               },
+  //             ))
+  //       ],
+  //     ),
+  //   );
+  // }
 }
